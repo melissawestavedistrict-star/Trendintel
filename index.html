@@ -536,6 +536,8 @@
       <button class="quick-btn" onclick="usePrompt('What vintage electronics are collectors buying right now?')">📻 Electronics</button>
       <button class="quick-btn" onclick="usePrompt('What seasonal items should I stock for the next holiday coming up?')">🎄 Seasonal</button>
       <button class="quick-btn" onclick="usePrompt('What vintage sports memorabilia is selling at a premium right now?')">🏆 Sports</button>
+      <button class="quick-btn" onclick="usePrompt('What craft supplies and vintage notions are selling best at markets and on Etsy?')">🧶 Craft Supplies</button>
+      <button class="quick-btn" onclick="usePrompt('What vintage barware and cocktail items are trending right now?')">🍸 Cocktails</button>
     </div>
 
     <div class="dropdown-wrap">
@@ -553,6 +555,8 @@
         <div class="dropdown-item" onclick="pickExample(this)">What should a new vendor stock to make money fast?</div>
         <div class="dropdown-item" onclick="pickExample(this)">What estate sale items are most likely to flip well?</div>
         <div class="dropdown-item" onclick="pickExample(this)">What vintage items are Gen Z buying the most right now?</div>
+        <div class="dropdown-item" onclick="pickExample(this)">What craft supplies and vintage notions sell best at flea markets?</div>
+        <div class="dropdown-item" onclick="pickExample(this)">What vintage barware and cocktail accessories are collectors looking for?</div>
       </div>
     </div>
 
@@ -733,6 +737,22 @@ const allTrends = [
     items: 'Original manga volumes (first prints), vintage anime cel art, early Dragon Ball Z merch',
     why: 'Anime collector market expanding rapidly. Authenticated original cels can command big prices.',
     emoji: '🎌'
+  },
+  {
+    type: ['all','handmade','mixed'],
+    heat: 'rising', badge: '📈 Rising Fast',
+    category: 'Craft Supplies',
+    items: 'Vintage fabric bundles, buttons & notions, embroidery kits, macramé cord, leather scraps, stamp sets',
+    why: 'DIY culture booming on TikTok & YouTube — crafters pay premium for unique vintage supplies others can\'t get.',
+    emoji: '🧶'
+  },
+  {
+    type: ['all','mixed','handmade'],
+    heat: 'rising', badge: '📈 Rising Fast',
+    category: 'Cocktails & Barware',
+    items: 'Vintage cocktail shakers, coupe glasses, bar carts, jiggers, swizzle sticks, recipe books',
+    why: 'Home cocktail culture still surging — retro barware is Instagram gold. Mid-century sets command top dollar.',
+    emoji: '🍸'
   }
 ];
 
@@ -873,8 +893,13 @@ Never repeat a brand or item. Never cut off mid-sentence. Only include complete 
     const data = await response.json();
 
     if (!response.ok) {
-      const errMsg = data.error?.message || data.error || 'Something went wrong. Please try again.';
-      responseText.innerHTML = `<em style="color:#C4440A">⚠️ Could not get trend data right now. Please try again in a moment.</em>`;
+      const errMsg = data.error?.message || data.error || 'Something went wrong.';
+      const isKeyError = typeof errMsg === 'string' && errMsg.toLowerCase().includes('api key');
+      if (isKeyError) {
+        responseText.innerHTML = `<em style="color:#C4440A">⚠️ The Anthropic API key is not configured. Go to Netlify Dashboard → Site Settings → Environment Variables and add <strong>ANTHROPIC_API_KEY</strong>.</em>`;
+      } else {
+        responseText.innerHTML = `<em style="color:#C4440A">⚠️ Could not get trend data right now. Please try again in a moment.</em>`;
+      }
       btn.disabled = false;
       btn.textContent = 'Get Intel →';
       return;
