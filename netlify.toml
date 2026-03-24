@@ -1,0 +1,10 @@
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+  external_node_modules = []
+  node_bundler = "esbuild"
+
+[functions."trend-advisor"]
+  timeout = 26
